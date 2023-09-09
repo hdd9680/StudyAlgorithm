@@ -1,4 +1,4 @@
-package level2.walkInPark;
+package level1.walkInPark;
 
 /**
  * 작성일 : 2023/09/08
@@ -11,7 +11,7 @@ package level2.walkInPark;
  * 위 두 가지중 어느 하나라도 해당된다면, 로봇 강아지는 해당 명령을 무시하고 다음 명령을 수행합니다.
  * 공원의 가로 길이가 W, 세로 길이가 H라고 할 때, 공원의 좌측 상단의 좌표는 (0, 0), 우측 하단의 좌표는 (H - 1, W - 1) 입니다.
  *
- * https://school.programmers.co.kr/learn/courses/30/lessons/181188
+ * https://school.programmers.co.kr/learn/courses/30/lessons/172928
  */
 
 public class Solution {
