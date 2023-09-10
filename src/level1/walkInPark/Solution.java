@@ -1,5 +1,8 @@
 package level1.walkInPark;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * 작성일 : 2023/09/08
  * 문제 설명 : 지나다니는 길을 'O', 장애물을 'X'로 나타낸 직사각형 격자 모양의 공원에서 로봇 강아지가 산책을 하려합니다.
@@ -16,10 +19,7 @@ package level1.walkInPark;
 
 public class Solution {
 
-    private final char EAST = 'E';
-    private final char WEST = 'W';
-    private final char NORTH = 'N';
-    private final char SOUTH = 'S';
+    private final Map<Character, int[]> directionToValue = Collections.unmodifiableMap(Map.of('E', new int[] {1, 0}, 'W', new int[] {-1, 0}, 'S', new int[] {0, 1}, 'N', new int[] {0, -1}));
 
     private final char WALL = 'X';
     private final char LOAD = 'O';
@@ -35,101 +35,53 @@ public class Solution {
 
         int minX = 0;
         int minY = 0;
-        int maxX = park[0].length() - 1;
-        int maxY = park.length - 1;
+        int maxX = park[0].length();
+        int maxY = park.length;
 
-        char[][] charArrayPark = new char[park.length][];
+        char[][] map = new char[park.length][];
 
         for(int y = 0 ; y < park.length ; y++) {
-            charArrayPark[y] = new char[park[y].length()];
+            map[y] = new char[park[y].length()];
             for (int x = 0; x < park[y].length(); x++) {
                 char pointChar = park[y].charAt(x);
                 if (pointChar == START) {
                     nowX = x;
                     nowY = y;
                 }
-                charArrayPark[y][x] = pointChar;
+                map[y][x] = pointChar;
             }
-        }
-
-        for(char[] y : charArrayPark) {
-            for(char x : y) {
-                System.out.print(x);
-            }
-            System.out.println();
         }
 
         for(String route : routes) {
             char direction = route.charAt(DIRECTION);
             int moveLenght = Character.getNumericValue(route.charAt(MOVE_LENGTH));
             boolean canMove = true;
+            int[] moveXy = directionToValue.get(direction);
+            int moveX = moveXy[0] * moveLenght;
+            int moveY = moveXy[1] * moveLenght;
+            int movedX = nowX + moveX;
+            int movedY = nowY + moveY;
 
-            if(direction == EAST) {
-                int tempX = nowX;
-                for(int i = 0 ; i < moveLenght ; i++) {
-                    if(tempX == maxX || charArrayPark[nowY][tempX + 1] == WALL) {
-                        canMove = false;
-                        break;
-                    }
-                    tempX++;
-                }
+            if(movedX < minX || movedX >= maxX || movedY < minY || movedY >= maxY) {
+                continue;
+            }
 
-                if(canMove) {
-                    nowX += moveLenght;
+            for(int i = 1 ; i < moveLenght + 1 ; i++) {
+                int tempX = nowX + i * moveXy[0];
+                int tempY = nowY + i * moveXy[1];
+                if(map[tempY][tempX] == WALL) {
+                    canMove = false;
+                    break;
                 }
-            } else if(direction == WEST) {
-                int tempX = nowX;
-                for(int i = 0 ; i < moveLenght ; i++) {
-                    if(tempX == minX || charArrayPark[nowY][tempX - 1] == WALL) {
-                        canMove = false;
-                        break;
-                    }
-                    tempX--;
-                }
+            }
 
-                if(canMove) {
-                    nowX -= moveLenght;
-                }
-            } else if(direction == SOUTH) {
-                int tempY = nowY;
-                for(int i = 0 ; i < moveLenght ; i++) {
-                    if(tempY == maxY || charArrayPark[tempY + 1][nowX] == WALL) {
-                        canMove = false;
-                        break;
-                    }
-                    tempY++;
-                }
-
-                if(canMove) {
-                    nowY += moveLenght;
-                }
-            } else {
-                int tempY = nowY;
-                for(int i = 0 ; i < moveLenght ; i++) {
-                    if(tempY == minY || charArrayPark[tempY - 1][nowX] == WALL) {
-                        canMove = false;
-                        break;
-                    }
-                    tempY--;
-                }
-
-                if(canMove) {
-                    nowY -= moveLenght;
-                }
+            if(canMove) {
+                nowX = movedX;
+                nowY = movedY;
             }
         }
 
         return new int[] {nowY, nowX};
-    }
-
-    public static void main(String[] args) {
-
-        Solution solution = new Solution();
-
-        int[] result = solution.solution(new String[] {"OSO","OOO","OXO","OOO"}, new  String[] {"W 3", "E 1", "S 2", "N 4", "E 1", "W 3"});
-        System.out.println(result[0] + ", " + result[1]);
-
-
     }
 
 }
