@@ -25,7 +25,7 @@ public class Solution {
             String[] splitTerms = each.split(" ");
             String policyName = splitTerms[0];
             int term = Integer.valueOf(splitTerms[1]);
-            termsMap.put(policyName, term * DAY_OF_MONTH);
+            termsMap.put(policyName, todayTotalDays - term * DAY_OF_MONTH);
         }
 
         List<Integer> answer = new ArrayList(privacies.length);
@@ -34,7 +34,7 @@ public class Solution {
             String privacyDate = splitPrivacy[0];
             String policyName = splitPrivacy[1];
 
-            if(stringDateToDays(privacyDate) + termsMap.get(policyName) <= todayTotalDays) {
+            if(stringDateToDays(privacyDate) <= termsMap.get(policyName)) {
                 answer.add(i + 1);
             }
         }
